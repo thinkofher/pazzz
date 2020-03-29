@@ -25,7 +25,7 @@ The flags are:
             Default value is 8.
         -secret str
             secret to generate password from. You can also use
-            "PAZZSECRET" environment variable to set secret.
+            "PAZZZSECRET" environment variable to set secret.
             Do no share your secret with anyone.
         -d
             include digits in password.
