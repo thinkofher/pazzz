@@ -4,13 +4,19 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/thinkofher/pazzz/engine"
 )
 
 const (
 	maxPasswordLength = 32
+	defaultPassLen    = 8
 	secretEnv         = "PAZZZSECRET"
+	lenEnv            = "PAZZZLEN"
+	flagEnv           = "PAZZZFLAGS"
+	flagSep           = ","
 )
 
 var (
@@ -24,8 +30,13 @@ var (
 )
 
 func init() {
+	passLen, err := parsePassLen()
+	if err != nil {
+		passLen = defaultPassLen
+	}
+
 	flag.StringVar(&secretFlag, "secret", "", "")
-	flag.IntVar(&lengthFlag, "len", 8, "")
+	flag.IntVar(&lengthFlag, "len", passLen, "")
 	flag.BoolVar(&lowercaseFlag, "l", false, "")
 	flag.BoolVar(&uppercaseFlag, "u", false, "")
 	flag.BoolVar(&digitsFlag, "d", false, "")
@@ -110,4 +121,34 @@ func main() {
 			name, err.Error())
 		os.Exit(1)
 	}
+}
+
+func parseFlags(flags string) *[]engine.Rule {
+	rules := map[string]bool{
+		"l": false,
+		"u": false,
+		"d": false,
+		"s": false,
+	}
+
+	for _, v := range strings.Split(flags, flagSep) {
+		_, ok := rules[v]
+		if ok {
+			rules[v] = true
+		}
+		// @TODO(thinkofher) add errors when innapropriate flag
+	}
+
+	return engine.Rules(rules["l"], rules["u"], rules["d"], rules["s"])
+}
+
+func parsePassLen() (int, error) {
+	passLen, err := strconv.Atoi(os.Getenv(lenEnv))
+	if err != nil {
+		return 0, err
+	}
+	if passLen > maxPasswordLength {
+		return 0, fmt.Errorf("password cannot be bigger than %d", maxPasswordLength)
+	}
+	return passLen, nil
 }
