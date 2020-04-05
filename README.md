@@ -15,7 +15,7 @@ For example. If you are *user* and you are using linux machine with bash, you ca
 export GOPATH=/home/user/go
 export PATH=$GOPATH/bin:$PATH
 ```
-You can read more about `$GOPATH` [here](https://github.com/golang/go/wiki/GOPATH) and [here](https://github.com/golang/go/wiki/GOPATH).
+You can read more about `$GOPATH` [here](https://github.com/golang/go/wiki/GOPATH).
 
 #### Installing with go
 
