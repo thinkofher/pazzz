@@ -21,7 +21,7 @@ You can read more about `$GOPATH` [here](https://github.com/golang/go/wiki/GOPAT
 
 If you meet the above requirements, you can simple paste below command into your shell:
 
-    $ go install github.com/thinkofher/pazzz
+    $ go get github.com/thinkofher/pazzz
 
 
 ### Example usage
