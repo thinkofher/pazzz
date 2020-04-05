@@ -30,8 +30,15 @@ var (
 )
 
 func init() {
-	passLen, err := parsePassLen()
-	if err != nil {
+	var passLen int
+	var err error
+
+	if env := os.Getenv(lenEnv); env != "" {
+		passLen, err = parsePassLen(env)
+		if err != nil {
+			handleError(err)
+		}
+	} else {
 		passLen = defaultPassLen
 	}
 
@@ -103,7 +110,20 @@ func run() error {
 	}
 
 	// Handle rules flags.
-	rules := engine.Rules(lowercaseFlag, uppercaseFlag, digitsFlag, symbolsFlag)
+	var rules *[]engine.Rule
+
+	// Get flags from environment variable.
+	if rulesFlags := os.Getenv(flagEnv); rulesFlags != "" {
+		rules, err = parseFlags(rulesFlags)
+		if err != nil {
+			return err
+		}
+	}
+
+	if lowercaseFlag || uppercaseFlag || digitsFlag || symbolsFlag {
+		// If user decides to use flags directly, respect them first.
+		rules = engine.Rules(lowercaseFlag, uppercaseFlag, digitsFlag, symbolsFlag)
+	}
 
 	// Generate password.
 	password := engine.Pass(e, *rules, lengthFlag)
@@ -117,13 +137,11 @@ func run() error {
 
 func main() {
 	if err := run(); err != nil {
-		fmt.Fprintf(os.Stderr, "%s: %s. Checkout pazz -h for more help.\n",
-			name, err.Error())
-		os.Exit(1)
+		handleError(err)
 	}
 }
 
-func parseFlags(flags string) *[]engine.Rule {
+func parseFlags(flags string) (*[]engine.Rule, error) {
 	rules := map[string]bool{
 		"l": false,
 		"u": false,
@@ -133,22 +151,28 @@ func parseFlags(flags string) *[]engine.Rule {
 
 	for _, v := range strings.Split(flags, flagSep) {
 		_, ok := rules[v]
-		if ok {
-			rules[v] = true
+		if !ok {
+			return nil, fmt.Errorf("your %s env is corrupted. there is no %s flag", flagEnv, v)
 		}
-		// @TODO(thinkofher) add errors when innapropriate flag
+		rules[v] = true
 	}
 
-	return engine.Rules(rules["l"], rules["u"], rules["d"], rules["s"])
+	return engine.Rules(rules["l"], rules["u"], rules["d"], rules["s"]), nil
 }
 
-func parsePassLen() (int, error) {
-	passLen, err := strconv.Atoi(os.Getenv(lenEnv))
+func parsePassLen(env string) (int, error) {
+	passLen, err := strconv.Atoi(env)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("your %s env is corrupted. cannot parse '%s'", lenEnv, env)
 	}
 	if passLen > maxPasswordLength {
-		return 0, fmt.Errorf("password cannot be bigger than %d", maxPasswordLength)
+		return 0, fmt.Errorf("your %s env is corrupted. password cannot be bigger than %d", lenEnv, maxPasswordLength)
 	}
 	return passLen, nil
+}
+
+func handleError(e error) {
+	fmt.Fprintf(os.Stderr, "%s: %s. Checkout %s -h for more help.\n",
+		name, e.Error(), name)
+	os.Exit(1)
 }
