@@ -113,11 +113,9 @@ func run() error {
 	var rules *[]engine.Rule
 
 	// Get flags from environment variable.
-	if rulesFlags := os.Getenv(flagEnv); rulesFlags != "" {
-		rules, err = parseFlags(rulesFlags)
-		if err != nil {
-			return err
-		}
+	rules, err = parseFlags(os.Getenv(flagEnv))
+	if err != nil {
+		return err
 	}
 
 	if lowercaseFlag || uppercaseFlag || digitsFlag || symbolsFlag {
@@ -147,6 +145,7 @@ func parseFlags(flags string) (*[]engine.Rule, error) {
 		"u": false,
 		"d": false,
 		"s": false,
+		"":  false, // handle empty flags string
 	}
 
 	for _, v := range strings.Split(flags, flagSep) {
