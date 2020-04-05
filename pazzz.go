@@ -22,7 +22,8 @@ The flags are:
 
         -len n
             length of password. cannot be bigger than 32.
-            Default value is 8.
+            Default value is 8. You can override it with
+            "PAZZZLEN" environment variable.
         -secret str
             secret to generate password from. You can also use
             "PAZZZSECRET" environment variable to set secret.

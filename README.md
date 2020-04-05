@@ -50,6 +50,14 @@ You can always check how to use **pazzz** with help flag, as in the command belo
 
 You can set this variable to your secret phrase, instead of entering it as a flag. It will keep your secret away from your shell history. Remember to do not keep it in your public dot files, because it will make your passwords vulnerable. The good way of storing your `$PAZZZSECRET` variable is to export it from separate shell source file, that you don't share with anyone.
 
+#### `$PAZZZLEN`
+
+You can set this variable to override default length of **pazzz**.
+
+#### `$PAZZZFLAGS`
+
+You can set this variable to override default flags (**u**ppercase and **l**owercase). Seperate flags with comma. This example value: `"d,u,l,s"`, will set every flag to true.
+
 ### Development
 
 PRs are welcome. Just fork this project, create separate branch with descriptive name, commit and open pull request.
