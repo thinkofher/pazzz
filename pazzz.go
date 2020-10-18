@@ -9,7 +9,7 @@ const usage = `Pazzz is a stateless unix password manager.
 
 Usage:
 
-        pazz [flags] [login] [site]
+        pazzz [flags] [login] [site]
 
 Arguments:
 
