@@ -5,7 +5,13 @@ pazzz
 
 ### Installation
 
-#### Before
+Right now the easiest way to install pazzz is to use [gobinaries](https://gobinaries.com/). You can use below command for your convenience.
+
+    $ curl -sf https://gobinaries.com/thinkofher/pazzz | sh
+
+### Building
+
+#### Prerequisites
 
 In order to install **pazzz**, you need to have installed `go 1.14` compiler on your machine, have properly set `$GOPATH` variable and `$GOPATH/bin` path added to your `$PATH` variable.
 
@@ -17,9 +23,9 @@ export PATH=$GOPATH/bin:$PATH
 ```
 You can read more about `$GOPATH` [here](https://github.com/golang/go/wiki/GOPATH).
 
-#### Installing with go
+#### Go get it
 
-If you meet the above requirements, you can simple paste below command into your shell:
+If you meet the above requirements, you can simply paste below command into your shell:
 
     $ go get github.com/thinkofher/pazzz
 
